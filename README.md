@@ -50,22 +50,51 @@ Update the `bmi_form.html` template to include JavaScript code that uses jQuery 
 <html>
 <head>
     <title>BMI Calculator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>BMI Calculator</h1>
-    <form id="bmi-form" method="post">
-        {% csrf_token %}
-        <label for="weight">Weight (kg):</label>
-        <input type="text" name="weight" id="weight" required>
-        <br>
-        <label for "height">Height (m):</label>
-        <input type="text" name="height" id="height" required>
-        <br>
-        <input type="submit" value="Calculate BMI">
-    </form>
-    <div id="bmi-result">
-        <!-- BMI result will be displayed here -->
+    <header class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="https://www.codeswithpankaj.com/">Codes With Pankaj</a>
+        </div>
+    </header>
+    <div class="container mt-4">
+        <h1 class="text-center">BMI Calculator</h1>
+        <div class="row justify-content-center mt-4">
+            <form id="bmi-form" class="col-md-6" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="weight">Weight (kg):</label>
+                    <input type="text" class="form-control" name="weight" id="weight" required>
+                </div>
+                <div class="form-group">
+                    <label for="height">Height (m):</label>
+                    <input type="text" class="form-control" name="height" id="height" required>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Calculate BMI</button>
+                </div>
+            </form>
+        </div>
+        <div class="row justify-content-center mt-4">
+            <div id="bmi-result" class="col-md-6 text-center">
+                <!-- BMI result will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- BMI meter with animation -->
+    <div class="bmi-meter">
+        <div class="bmi-value" id="bmi-value">BMI: 0</div>
+        <div class="bmi-scale">
+            <div class="bmi-category">Underweight</div>
+            <div class="bmi-category">Normal Weight</div>
+            <div class="bmi-category">Overweight</div>
+            <div class="bmi-category">Obesity</div>
+        </div>
     </div>
 
     <script>
@@ -77,14 +106,80 @@ Update the `bmi_form.html` template to include JavaScript code that uses jQuery 
                     url: "{% url 'calculate_bmi' %}",
                     data: $(this).serialize(),
                     success: function (data) {
-                        $("#bmi-result").html("Your BMI is: " + data.bmi.toFixed(2));
+                        const bmi = data.bmi.toFixed(2);
+                        $("#bmi-result").html("Your BMI is: " + bmi);
+                        
+                        // Update the BMI meter with animation
+                        updateBMIMeter(bmi);
                     },
                 });
             });
+
+            // Function to update the BMI meter
+            function updateBMIMeter(bmi) {
+                const meterValue = $("#bmi-value");
+                meterValue.text("BMI: " + bmi);
+                const scale = $(".bmi-scale");
+                scale.children().removeClass("active");
+                if (bmi < 18.5) {
+                    scale.children().eq(0).addClass("active");
+                } else if (bmi < 24.9) {
+                    scale.children().eq(1).addClass("active");
+                } else if (bmi < 29.9) {
+                    scale.children().eq(2).addClass("active");
+                } else {
+                    scale.children().eq(3).addClass("active");
+                }
+            }
         });
     </script>
 </body>
 </html>
+<style>
+    /* Additional styles for the BMI meter */
+.bmi-meter {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.bmi-value {
+    font-size: 24px;
+    animation: pulse 2s infinite;
+}
+
+.bmi-scale {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.bmi-category {
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+
+.bmi-category.active {
+    font-weight: bold;
+    color: #007bff;
+    opacity: 1;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+</style>
 ```
 
 This modified code includes JavaScript that prevents the form submission, sends an AJAX POST request to the `calculate_bmi` view, and updates the `#bmi-result` element with the BMI result.
