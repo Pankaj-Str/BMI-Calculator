@@ -1,0 +1,18 @@
+<h1>BMI Results</h1>
+<table>
+    <tr>
+        <th>Height</th>
+        <th>Weight</th>
+        <th>BMI</th>
+        <th>Created At</th>
+    </tr>
+    {% for record in records %}
+        <tr>
+            <td>{{ record.height }}</td>
+            <td>{{ record.weight }}</td>
+            <td>{{ record.bmi }}</td>
+            <td>{{ record.created_at }}</td>
+        </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'calculate_bmi' %}">Calculate Another BMI</a>
