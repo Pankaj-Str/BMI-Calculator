@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BMI Calculator @codeswithpankaj.com</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>BMI Calculator</h1>
+    <a href="https://www.codeswithpankaj.com/">Codes With Pankaj</p>
+    <form id="bmi-form" method="post">
+        {% csrf_token %}
+        <label for="weight">Weight (kg):</label>
+        <input type="text" name="weight" id="weight" required>
+        <br>
+        <label for "height">Height (m):</label>
+        <input type="text" name="height" id="height" required>
+        <br>
+        <input type="submit" value="Calculate BMI">
+    </form>
+    <div id="bmi-result">
+        <!-- BMI result will be displayed here -->
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $("#bmi-form").submit(function (event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'calculate_bmi' %}",
+                    data: $(this).serialize(),
+                    success: function (data) {
+                        $("#bmi-result").html("Your BMI is: " + data.bmi.toFixed(2));
+                    },
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -8,4 +8,3 @@ class BMIRecord(models.Model):
 
     def __str__(self):
         return f'BMI Record ({self.created_at})'
-›
